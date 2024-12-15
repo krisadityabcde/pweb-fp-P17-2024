@@ -21,36 +21,49 @@ defineProps({
 <style scoped>
 .card {
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  background-color: #fff;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 .card-image {
   width: 100%;
   height: auto;
   display: block;
+  border-bottom: 1px solid #ddd;
 }
 
 .card-content {
-  padding: 16px;
+  padding: 20px;
 }
 
 .card-title {
-  font-size: 1.5em;
-  margin: 0 0 10px;
+  font-size: 1.75em;
+  margin: 0 0 15px;
   color: #333;
+  font-weight: bold;
 }
 
 .card-target,
 .card-current-donation {
-  font-size: 1em;
-  margin: 5px 0;
-  color: #666;
+  font-size: 1.1em;
+  margin: 8px 0;
+  color: #555;
+}
+
+.card-target {
+  font-weight: 500;
+}
+
+.card-current-donation {
+  font-weight: 700;
+  color: #007BFF;
 }
 </style>
