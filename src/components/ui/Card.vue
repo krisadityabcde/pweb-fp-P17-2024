@@ -1,21 +1,40 @@
 <template>
-  <div class="card">
-    <img :src="image" alt="Campaign Image" class="card-image" />
-    <div class="card-content">
-      <h3 class="card-title">{{ title }}</h3>
-      <p class="card-target">Target: {{ target }}</p>
-      <p class="card-current-donation">Current Donation: {{ currentDonation }}</p>
+  <div class="card bg-white shadow-md rounded-lg p-4">
+    <img :src="image" alt="Campaign Image" class="card-image w-full h-48 object-cover rounded-t-lg" />
+    <div class="card-content p-4">
+      <h2 class="card-title text-xl font-semibold">{{ title }}</h2>
+      <p class="card-description text-gray-700">{{ description }}</p>
+      <p class="card-target text-green-600 font-bold">Target: {{ target }}</p>
+      <router-link :to="'/crowdfund/' + id" class="text-blue-500 hover:underline">Lihat Detail</router-link>
+      <button @click="toggleFavorite" class="mt-2 py-1 px-3 bg-transparent text-red-500 rounded-md">
+        <font-awesome-icon :icon="[isFavorited ? 'fas' : 'far', 'heart']" />
+      </button>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
+import { ref, defineComponent } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faHeart as fasHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
+
+library.add(fasHeart, farHeart);
+
 defineProps({
+  id: String,
   title: String,
-  image: String,
+  description: String,
   target: String,
-  currentDonation: Number
+  image: String,
+  isFavorited: Boolean
 });
+
+const emits = defineEmits(['favorite']);
+const toggleFavorite = () => {
+  emits('favorite');
+};
 </script>
 
 <style scoped>
@@ -65,5 +84,28 @@ defineProps({
 .card-current-donation {
   font-weight: 700;
   color: #007BFF;
+}
+
+.card-detail-link {
+  display: inline-block;
+  margin-top: 15px;
+  font-size: 1em;
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.card-detail-link:hover {
+  text-decoration: underline;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
 }
 </style>

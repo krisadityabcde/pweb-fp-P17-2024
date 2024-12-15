@@ -38,7 +38,8 @@ const newsItems = [
         <NewsCard
           v-for="news in newsItems"
           :key="news.title"
-          v-bind="news"
+            v-bind="news"
+            :image="news.image"
         />
       </div>
     </div>
