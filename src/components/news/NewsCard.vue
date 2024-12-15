@@ -1,33 +1,76 @@
-<script setup lang="ts">
-import dayjs from 'dayjs'
-import Card from '../ui/Card.vue'
+<template>
+  <div class="news-card">
+    <img :src="image" alt="News Image" class="news-image" />
+    <h2 class="news-title">{{ title }}</h2>
+    <p class="news-description">{{ description }}</p>
+    <a :href="link" class="news-link">Read more</a>
+  </div>
+</template>
 
-defineProps<{
-  title: string
-  description: string
-  date: string
-  image: string
-  category: string
-}>()
+<script>
+export default {
+  name: 'NewsCard',
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    description: {
+      type: String,
+      required: true
+    },
+    link: {
+      type: String,
+      required: true
+    },
+    image: {
+      type: String,
+      required: true
+    }
+  }
+}
 </script>
 
-<template>
-  <Card class="h-full">
-    <div class="relative">
-      <img :src="image" :alt="title" class="w-full h-48 object-cover">
-      <div class="absolute top-4 left-4">
-        <span class="px-3 py-1 text-sm font-medium bg-green-500 text-white rounded-full">
-          {{ category }}
-        </span>
-      </div>
-    </div>
-    <div class="p-6">
-      <h3 class="text-xl font-bold mb-2">{{ title }}</h3>
-      <p class="text-gray-600 mb-4">{{ description }}</p>
-      <div class="flex justify-between items-center">
-        <div class="text-sm text-gray-500">{{ dayjs(date).format('MMMM D, YYYY') }}</div>
-        <button class="text-green-600 hover:text-green-700 font-medium">Read More →</button>
-      </div>
-    </div>
-  </Card>
-</template>
+<style scoped>
+.news-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  background-color: #fff;
+}
+
+.news-card:hover {
+  transform: translateY(-5px);
+}
+
+.news-title {
+  font-size: 1.75em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.news-description {
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.news-image {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.news-link {
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: bold;
+}
+.news-link:hover {
+  text-decoration: underline;
+}
+</style>
