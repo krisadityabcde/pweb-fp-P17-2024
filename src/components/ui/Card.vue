@@ -22,19 +22,33 @@ import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
 
 library.add(fasHeart, farHeart);
 
-defineProps({
+export default defineComponent({
+  components: {
+    FontAwesomeIcon
+  },
+  props: {
   id: String,
   title: String,
   description: String,
   target: String,
   image: String,
   isFavorited: Boolean
-});
+  },
+  emits: ['favorite'],
+  setup(_, { emit }) {
+    const isFavorited = ref(false);
 
-const emits = defineEmits(['favorite']);
-const toggleFavorite = () => {
-  emits('favorite');
-};
+    const toggleFavorite = () => {
+      isFavorited.value = !isFavorited.value;
+      emit('favorite');
+    };
+
+    return {
+      isFavorited,
+      toggleFavorite
+    };
+  }
+});
 </script>
 
 <style scoped>
