@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import { db } from '../../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { Carousel, Slide } from 'vue3-carousel';
 import Card from '../ui/Card.vue';
 import type { Crowdfund } from '@/types';
 
@@ -26,14 +25,17 @@ onMounted(() => {
 <template>
   <div>
     <h2 class="text-2xl font-bold mb-4">Featured Campaigns</h2>
-    <Carousel>
-      <Slide v-for="campaign in campaigns" :key="campaign.id">
-        <Card :title="campaign.name" :image="campaign.image" :target="campaign.target" :currentDonation="campaign.current_donation" />
-      </Slide>
-    </Carousel>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <Card v-for="campaign in campaigns" :key="campaign.id" :title="campaign.name" :image="campaign.image" :target="campaign.target" :currentDonation="campaign.current_donation" />
+    </div>
   </div>
 </template>
 
 <style scoped>
 /* Add your styles here */
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+}
 </style>

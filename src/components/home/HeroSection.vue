@@ -14,7 +14,6 @@ import { RouterLink } from 'vue-router'
           <RouterLink to="/crowdfund">
             <Button variant="secondary" size="lg">Jelajahi Kampanye</Button>
           </RouterLink>
-          <Button variant="primary" size="lg">Mulai Berdonasi</Button>
         </div>
       </div>
     </div>
