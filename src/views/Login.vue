@@ -5,12 +5,19 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const email = ref('')
 const password = ref('')
+const error = ref('')
 
-const login = async () => {
-  // Simulate an API call to authenticate the user
-  const token = 'example-token'; // Replace with actual token from API response
-  localStorage.setItem('token', token)
+const handleLogin = () => {
+  // Simple validation
+  if (!email.value || !password.value) {
+    error.value = 'Please fill in all fields'
+    return
+  }
+
+  // Mock login - in real app, this would call an API
+  localStorage.setItem('token', 'mock-token')
   router.push('/')
+  window.location.reload() // Refresh to update nav state
 }
 </script>
 
@@ -20,7 +27,7 @@ const login = async () => {
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
       </div>
-      <form class="mt-8 space-y-6" @submit.prevent="login">
+      <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
             <label for="email-address" class="sr-only">Email address</label>

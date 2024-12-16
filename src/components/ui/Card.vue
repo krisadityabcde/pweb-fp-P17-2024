@@ -8,47 +8,41 @@
       <router-link :to="'/crowdfund/' + id" class="text-blue-500 hover:underline">Lihat Detail</router-link>
       <button @click="toggleFavorite" class="mt-2 py-1 px-3 bg-transparent text-red-500 rounded-md">
         <font-awesome-icon :icon="[isFavorited ? 'fas' : 'far', 'heart']" />
+        {{ isFavorited ? 'Unfavorite' : 'Favorite' }}
       </button>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { ref, defineComponent } from 'vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faHeart as fasHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 library.add(fasHeart, farHeart);
 
-export default defineComponent({
-  components: {
-    FontAwesomeIcon
-  },
-  props: {
+const props = defineProps({
   id: String,
   title: String,
   description: String,
   target: String,
   image: String,
   isFavorited: Boolean
-  },
-  emits: ['favorite'],
-  setup(_, { emit }) {
-    const isFavorited = ref(false);
-
-    const toggleFavorite = () => {
-      isFavorited.value = !isFavorited.value;
-      emit('favorite');
-    };
-
-    return {
-      isFavorited,
-      toggleFavorite
-    };
-  }
 });
+
+const emits = defineEmits(['favorite']);
+const isFavorited = ref(props.isFavorited);
+
+watch(() => props.isFavorited, (newVal) => {
+  isFavorited.value = newVal;
+});
+
+const toggleFavorite = () => {
+  isFavorited.value = !isFavorited.value;
+  emits('favorite');
+};
 </script>
 
 <style scoped>
@@ -117,9 +111,15 @@ button {
   border: none;
   background: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 button:focus {
   outline: none;
+}
+
+button .fa-heart {
+  margin-right: 8px;
 }
 </style>

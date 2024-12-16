@@ -36,10 +36,13 @@ export interface FavoriteCrowdfund {
 }
 
 export interface Crowdfund {
+  id: string;
   name: string;
+  description?: string;
   target: string;
   current_donation: number;
   status: CrowdfundStatus;
-  favorite_crowdfund: FavoriteCrowdfund;
+  image : string;
+  favorite_crowdfund: FavoriteCrowdfund[];
   created_at: Date;
 }
