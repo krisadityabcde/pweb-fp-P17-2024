@@ -1,6 +1,11 @@
 <template>
   <div class="crowdfund-page">
-    <h1 class="text-2xl font-bold mb-4">Daftar Crowdfund</h1>
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold">Daftar Crowdfund</h1>
+      <router-link to="/crowdfund/favorite" class="text-blue-500 hover:underline">
+        Favorited Crowdfunds
+      </router-link>
+    </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card
         v-for="item in crowdfunds"
@@ -34,7 +39,8 @@ const fetchCrowdfunds = async () => {
     crowdfunds.value = querySnapshot.docs.map(doc => {
       const data = doc.data() as Crowdfund;
       const isFavorited = data.favorite_crowdfund?.some(fav => fav.user_id === currentUserId) ?? false;
-      return { id: doc.id, ...data, isFavorited };
+      const { id, ...rest } = data;
+      return { id: doc.id, ...rest, isFavorited };
     });
   } catch (error) {
     console.error('Error fetching crowdfunds: ', error);

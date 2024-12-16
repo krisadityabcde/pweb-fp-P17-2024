@@ -7,6 +7,10 @@ const email = ref('')
 const password = ref('')
 const error = ref('')
 
+const generateToken = () => {
+  return Math.random().toString(36).substr(2);
+};
+
 const handleLogin = () => {
   // Simple validation
   if (!email.value || !password.value) {
@@ -14,8 +18,11 @@ const handleLogin = () => {
     return
   }
 
-  // Mock login - in real app, this would call an API
-  localStorage.setItem('token', 'mock-token')
+  const token = generateToken();
+  const userName = email.value.split('@')[0]; // Simulate extracting user name from email
+
+  localStorage.setItem('token', token);
+  localStorage.setItem('userName', userName);
   router.push('/')
   window.location.reload() // Refresh to update nav state
 }
@@ -36,6 +43,7 @@ const handleLogin = () => {
               id="email-address"
               name="email"
               type="email"
+              autocomplete="email"
               required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
               placeholder="Email address"
@@ -48,6 +56,7 @@ const handleLogin = () => {
               id="password"
               name="password"
               type="password"
+              autocomplete="current-password"
               required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
               placeholder="Password"

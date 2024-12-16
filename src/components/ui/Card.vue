@@ -4,7 +4,7 @@
     <div class="card-content p-4">
       <h2 class="card-title text-xl font-semibold">{{ title }}</h2>
       <p class="card-description text-gray-700">{{ description }}</p>
-      <p class="card-target text-green-600 font-bold">Target: {{ target }}</p>
+      <p class="card-target text-green-600 font-bold">Target: {{ formattedTarget }}</p>
       <router-link :to="'/crowdfund/' + id" class="text-blue-500 hover:underline">Lihat Detail</router-link>
       <button @click="toggleFavorite" class="mt-2 py-1 px-3 bg-transparent text-red-500 rounded-md">
         <font-awesome-icon :icon="[isFavorited ? 'fas' : 'far', 'heart']" />
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faHeart as fasHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
@@ -43,6 +43,10 @@ const toggleFavorite = () => {
   isFavorited.value = !isFavorited.value;
   emits('favorite');
 };
+
+const formattedTarget = computed(() => {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Number(props.target));
+});
 </script>
 
 <style scoped>

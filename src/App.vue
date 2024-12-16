@@ -5,11 +5,11 @@ import Footer from './components/layout/Footer.vue'
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <Navbar />
+    <Navbar/>
     <main>
       <router-view></router-view>
     </main>
-    <Footer />
+    <Footer/>
   </div>
 </template>
 
