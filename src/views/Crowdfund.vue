@@ -2,8 +2,8 @@
   <div class="crowdfund-page">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl font-bold">Daftar Crowdfund</h1>
-      <router-link to="/crowdfund/favorite" class="text-blue-500 hover:underline">
-        Favorited Crowdfunds
+      <router-link to="/crowdfund/favorite" class="text-red-500 hover:underline flex items-center">
+        <span>Favorited Crowdfunds</span>
       </router-link>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

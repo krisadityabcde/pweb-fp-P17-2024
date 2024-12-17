@@ -25,11 +25,11 @@
                     </div>
                     <div v-if="paymentMethod === 'Transfer'" class="mb-4">
                         <label for="bankName" class="block text-sm font-medium text-gray-700">Bank Name</label>
-                        <input v-model="bankName" id="bankName" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+                        <input v-model="bankName" id="bankName" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required />
                     </div>
                     <div class="mb-4">
                         <label for="donationAmount" class="block text-sm font-medium text-gray-700">Donation Amount</label>
-                        <input v-model="donationAmount" id="donationAmount" type="number" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+                        <input v-model="donationAmount" id="donationAmount" type="number" min="1" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
                     </div>
                     <button type="submit" class="py-2 px-4 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-md hover:from-green-600 hover:to-green-800 transform hover:scale-105 transition-transform duration-300 focus:outline-none shadow-md">Submit Donation</button>
                 </form>
@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db } from '../firebase';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -62,6 +62,7 @@ import type { Crowdfund } from '../types';
 library.add(fasHeart, farHeart);
 
 const route = useRoute();
+const router = useRouter();
 const crowdfundId = route.params.id as string;
 const crowdfund = ref<Partial<Crowdfund>>({});
 const currentUserId = '1'; // Replace with actual user ID if available
@@ -77,8 +78,6 @@ const currentUserName = ref('');
 onMounted(() => {
   if (typeof window !== 'undefined' && window.localStorage) {
     currentUserName.value = window.localStorage.getItem('userName') || '';
-    // If user ID is also stored
-    // currentUserId = window.localStorage.getItem('userId') || '1';
   }
 });
 
@@ -126,11 +125,7 @@ const submitDonation = async () => {
     await updateDoc(crowdfundDoc, {
       current_donation: (crowdfund.value.current_donation ?? 0) + donationAmount.value
     });
-    alert('Donation submitted successfully!');
-    donationAmount.value = 0;
-    bankName.value = '';
-    paymentMethod.value = 'QRIS';
-    fetchCrowdfund();
+    router.push({ name: 'crowdfund-success', params: { id: crowdfundId }, query: { amount: donationAmount.value } });
   } catch (error) {
     console.error('Error submitting donation:', error);
   }
