@@ -32,8 +32,7 @@ const logout = () => {
     // Update reactive state
     isLoggedIn.value = false;
     userName.value = '';
-    // Redirect to login page
-    router.push('/login');
+    router.push('/');
     console.log('Logout successful.');
   } catch (error) {
     console.error('Error during logout:', error);
@@ -59,7 +58,9 @@ watchEffect(() => {
         <!-- Left Side: Logo and Navigation Links -->
         <div class="flex space-x-7">
           <div class="flex items-center">
-            <h1 class="text-xl font-bold text-white">BisaKita</h1>
+            <router-link to="/" class="flex items-center">
+              <h1 class="text-xl font-bold text-white">BisaKita</h1>
+            </router-link>
           </div>
           <div class="hidden md:flex items-center space-x-4">
             <router-link to="/" class="py-4 px-2 text-white hover:text-green-300">Beranda</router-link>

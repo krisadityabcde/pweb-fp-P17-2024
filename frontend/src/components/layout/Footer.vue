@@ -5,7 +5,7 @@ const navigation = {
   main: [
     { name: 'Beranda', href: '/', icon: HomeIcon },
     { name: 'Berita', href: '/news', icon: NewspaperIcon },
-    { name: 'Donasi', href: '/#donate', icon: HeartIcon },
+    { name: 'Donasi', href: '/crowdfund', icon: HeartIcon },
     { name: 'Kontak', href: '/#contact', icon: PhoneIcon },
   ],
   social: [
