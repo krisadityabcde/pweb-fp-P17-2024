@@ -35,14 +35,28 @@
                 </form>
             </div>
             <div class="comment-form mt-6">
-                <h2 class="text-xl font-bold mb-4">Leave a Comment</h2>
+                <h2 class="text-xl font-bold mb-4">Add a Comment</h2>
                 <form @submit.prevent="submitComment">
                     <div class="mb-4">
-                        <label for="commentMessage" class="block text-sm font-medium text-gray-700">Message</label>
-                        <textarea v-model="commentMessage" id="commentMessage" rows="4" class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                        <label for="commentMessage" class="block text-sm font-medium text-gray-700">Comment</label>
+                        <textarea v-model="commentMessage" id="commentMessage" rows="4" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required></textarea>
                     </div>
-                    <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none shadow-md">Submit Comment</button>
+                    <button type="submit" class="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none shadow-md">
+                        Submit Comment
+                    </button>
                 </form>
+            </div>
+            <div class="comments-section mt-6">
+                <h2 class="text-xl font-bold mb-4">Comments</h2>
+                <div v-if="comments.length === 0" class="text-gray-600">
+                    No comments yet.
+                </div>
+                <div v-else>
+                    <div v-for="comment in comments" :key="comment.timestamp.toString()" class="mb-4 p-4 border border-gray-300 rounded-md">
+                        <p class="text-sm text-gray-700"><strong>{{ comment.user_name }}</strong> commented on {{ new Date(comment.timestamp.seconds * 1000).toLocaleString() }}</p>
+                        <p class="text-gray-800">{{ comment.message }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -71,6 +85,16 @@ const paymentMethod = ref('QRIS');
 const bankName = ref('');
 const donationAmount = ref(0);
 const commentMessage = ref('');
+interface Comment {
+  user_name: string;
+  message: string;
+  timestamp: {
+    seconds: number;
+    nanoseconds: number;
+  };
+}
+
+const comments = ref<Comment[]>([]);
 
 // Initialize currentUserName from localStorage
 const currentUserName = ref('');
@@ -88,6 +112,7 @@ const fetchCrowdfund = async () => {
     if (docSnap.exists()) {
       crowdfund.value = docSnap.data() as Crowdfund;
       isFavorited.value = (crowdfund.value.favorite_crowdfund ?? []).some(fav => fav.user_id === currentUserId);
+      comments.value = crowdfund.value.comments || [];
     } else {
       console.error('No such document!');
     }
@@ -137,6 +162,7 @@ const submitComment = async () => {
     await updateDoc(crowdfundDoc, {
       comments: arrayUnion({ user_name: currentUserName.value, message: commentMessage.value, timestamp: new Date() })
     });
+    comments.value.push({ user_name: currentUserName.value, message: commentMessage.value, timestamp: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } });
     alert('Comment submitted successfully!');
     commentMessage.value = '';
   } catch (error) {

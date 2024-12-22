@@ -23,8 +23,9 @@ const handleLogin = () => {
 
   localStorage.setItem('token', token);
   localStorage.setItem('userName', userName);
-  router.push('/')
-  window.location.reload() // Refresh to update nav state
+  router.push('/').then(() => {
+    window.location.reload();
+  });
 }
 </script>
 
