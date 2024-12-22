@@ -19,21 +19,6 @@ router.get('/crowdfund', async (req, res) => {
   }
 });
 
-// Get favorited crowdfunds
-router.get('/crowdfund/favorite', async (req, res) => {
-    try {
-      const userId = req.query.userId; // Assuming userId is passed as a query parameter
-      const snapshot = await db.collection('crowdfunds').where('favorite_crowdfund', 'array-contains', { user_id: userId }).get();
-      if (snapshot.empty) {
-        return res.status(404).send('No favorited crowdfunds found');
-      }
-      const favoritedCrowdfunds = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      res.json(favoritedCrowdfunds);
-    } catch (error) {
-      res.status(500).send('Error getting favorited crowdfunds');
-    }
-  });
-
 // Get a single crowdfund by ID
 router.get('/crowdfund/:id', async (req, res) => {
   try {

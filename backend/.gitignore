@@ -11,7 +11,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Firebase service account key
-serviceAccountKey.json
+fp-pemweb-p17-firebase-adminsdk-pvdcl-3a9fef532b.json
 
 # TypeScript
 *.tsbuildinfo
