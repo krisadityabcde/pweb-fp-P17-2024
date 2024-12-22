@@ -2,5 +2,6 @@
 
 How to use:
 
-1. npm install
-2. npm run dev
+1. npm install (twice on backend and frontend folder)
+2. npm run start:dev (backend)
+3. npm run dev (frontend)
