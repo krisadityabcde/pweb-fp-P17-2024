@@ -27,27 +27,45 @@ const routes = [
     path: '/crowdfund',
     name: 'Crowdfund',
     component: Crowdfund,
+    meta: { requiresAuth: true }
   },
   {
     path: '/crowdfund/:id',
     name: 'crowdfund-detail',
-    component: CrowdfundDetail
+    component: CrowdfundDetail,
+    meta: { requiresAuth: true }
   },
   {
     path: '/crowdfund/favorite',
     name: 'favorite-crowdfund',
-    component: CrowdfundFavorite
+    component: CrowdfundFavorite,
+    meta: { requiresAuth: true }
   },
   {
     path: '/crowdfund/:id/success',
     name: 'crowdfund-success',
-    component: CrowdfundSuccess
+    component: CrowdfundSuccess,
+    meta: { requiresAuth: true }
   }
 ];
 
 const router = createRouter({
   history: createWebHistory('/'),
   routes
+});
+
+// Add a global navigation guard
+router.beforeEach((to, _, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      next({ name: 'login' });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 export default router
