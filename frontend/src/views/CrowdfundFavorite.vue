@@ -24,61 +24,63 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { collection, getDocs, updateDoc, arrayRemove, doc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { faHeart as fasHeart } from '@fortawesome/free-solid-svg-icons';
+import { ref, onMounted, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faHeart as fasHeart } from '@fortawesome/free-solid-svg-icons';
+import type { Crowdfund } from '../types';
 
-interface Crowdfund {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    favorite_crowdfund?: { user_id: string; crowdfund_id: string }[];
-}
 
-const favoritedCrowdfunds = ref<Crowdfund[]>([]);
-const currentUserId = '1'; // Replace with actual user ID logic
+const crowdfunds = ref<Crowdfund[]>([]);
+const currentUserId = '1';
 
-const fetchFavoritedCrowdfunds = async () => {
-    try {
-        const crowdfundsRef = collection(db, 'crowdfunds');
-        const querySnapshot = await getDocs(crowdfundsRef);
-        const allCrowdfunds: Crowdfund[] = [];
-        querySnapshot.forEach(doc => {
-            allCrowdfunds.push({ id: doc.id, ...(doc.data() as Omit<Crowdfund, 'id'>) });
-        });
-        favoritedCrowdfunds.value = allCrowdfunds.filter(cf => cf.favorite_crowdfund?.some(fav => fav.user_id === currentUserId));
-    } catch (error) {
-        console.error('Error fetching favorited crowdfunds:', error);
+const fetchCrowdfunds = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/crowdfund');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
+    crowdfunds.value = await response.json();
+  } catch (error) {
+    console.error('Error fetching crowdfunds:', error);
+  }
 };
 
-const unfavorite = async (crowdfundId: string) => {
-    try {
-        const crowdfundDoc = doc(db, 'crowdfunds', crowdfundId);
-        await updateDoc(crowdfundDoc, {
-            favorite_crowdfund: arrayRemove({ user_id: currentUserId, crowdfund_id: crowdfundId })
-        });
-        favoritedCrowdfunds.value = favoritedCrowdfunds.value.filter(cf => cf.id !== crowdfundId);
-    } catch (error) {
-        console.error('Error unfavoriting crowdfund:', error);
+const favoritedCrowdfunds = computed(() => {
+  return crowdfunds.value.filter(crowdfund => 
+    crowdfund.favorite_crowdfund && crowdfund.favorite_crowdfund.some(fav => fav.user_id === currentUserId)
+  );
+});
+
+const unfavorite = async (crowdfundId: string | number) => {
+  try {
+    const crowdfund = crowdfunds.value.find(cf => cf.id === crowdfundId);
+    if (crowdfund) {
+      crowdfund.favorite_crowdfund = crowdfund.favorite_crowdfund.filter(fav => fav.user_id !== currentUserId);
+      await fetch(`http://localhost:5000/api/crowdfund/${crowdfundId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(crowdfund)
+      });
     }
+  } catch (error) {
+    console.error('Error unfavoriting crowdfund:', error);
+  }
 };
 
 onMounted(() => {
-    fetchFavoritedCrowdfunds();
+  fetchCrowdfunds();
 });
 </script>
 
 <style scoped>
 .crowdfund-favorite-page {
-    min-height: 100vh;
-    background-color: #f9fafb;
+  min-height: 100vh;
+  background-color: #f9fafb;
 }
 
 h1 {
-    color: #1f2937;
+  color: #1f2937;
 }
 </style>

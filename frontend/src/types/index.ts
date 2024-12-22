@@ -27,7 +27,9 @@ export interface Donation {
 }
 
 export interface Comment {
+  user_name: string;
   message: string;
+  timestamp: Date;
 }
 
 export interface FavoriteCrowdfund {
@@ -45,4 +47,6 @@ export interface Crowdfund {
   image : string;
   favorite_crowdfund: FavoriteCrowdfund[];
   created_at: Date;
+  comments?: Comment[];
+  isFavorited?: boolean;
 }

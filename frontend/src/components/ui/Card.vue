@@ -2,7 +2,7 @@
   <div class="card bg-white shadow-md rounded-lg p-4">
     <img :src="image" alt="Campaign Image" class="card-image w-full h-48 object-cover rounded-t-lg" />
     <div class="card-content p-4">
-      <h2 class="card-title text-xl font-semibold">{{ title }}</h2>
+      <h2 class="card-title text-xl font-semibold">{{ name }}</h2>
       <p class="card-description text-gray-700">{{ description }}</p>
       <p class="card-target text-green-600 font-bold">Target: {{ formattedTarget }}</p>
       <router-link :to="'/crowdfund/' + id" class="text-blue-500 hover:underline">Lihat Detail</router-link>
@@ -19,18 +19,12 @@ import { ref, watch, computed } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faHeart as fasHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
+library.add(fasHeart, farHeart);
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-library.add(fasHeart, farHeart);
+import type { Crowdfund } from '../../types/index';
 
-const props = defineProps({
-  id: String,
-  title: String,
-  description: String,
-  target: String,
-  image: String,
-  isFavorited: Boolean
-});
+const props = defineProps<Crowdfund>();
 
 const emits = defineEmits(['favorite']);
 const isFavorited = ref(props.isFavorited);

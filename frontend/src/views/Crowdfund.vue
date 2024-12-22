@@ -10,12 +10,16 @@
       <Card
         v-for="item in crowdfunds"
         :key="item.id"
-        :id="item.id"
-        :title="item.name"
+        :id="item.id || ''"
+        :name="item.name || ''"
         :description="item.description"
-        :target="item.target"
-        :image="item.image"
+        :target="item.target || ''"
+        :current_donation="item.current_donation ?? 0"
+        :status="item.status || CrowdfundStatus.OPEN"
+        :image="item.image || ''"
         :isFavorited="item.isFavorited"
+        :favorite_crowdfund="item.favorite_crowdfund || []"
+        :created_at="item.created_at || ''"
         @favorite="item.id ? toggleFavorite(item.id) : null"
       />
     </div>
@@ -24,53 +28,52 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { db } from '../firebase';
-import { collection, getDocs, query, where, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import Card from '../components/ui/Card.vue';
+import { CrowdfundStatus } from '../types';
 import type { Crowdfund } from '../types';
 
 const crowdfunds = ref<Partial<Crowdfund & { isFavorited: boolean }>[]>([]);
-const currentUserId = '1'; // Replace with actual user ID
+const currentUserId = '1';
 
 const fetchCrowdfunds = async () => {
   try {
-    const q = query(collection(db, 'crowdfunds'), where('status', '==', 'OPEN'));
-    const querySnapshot = await getDocs(q);
-    crowdfunds.value = querySnapshot.docs.map(doc => {
-      const data = doc.data() as Crowdfund;
-      const isFavorited = data.favorite_crowdfund?.some(fav => fav.user_id === currentUserId) ?? false;
-      const { id, ...rest } = data;
-      return { id: doc.id, ...rest, isFavorited };
-    });
+    const response = await fetch('http://localhost:5000/api/crowdfund');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    crowdfunds.value = data.map((item: any) => ({
+      ...item,
+      created_at: new Date(item.created_at),
+      isFavorited: item.favorite_crowdfund?.some((fav: any) => fav.user_id === currentUserId),
+    }));
   } catch (error) {
-    console.error('Error fetching crowdfunds: ', error);
+    console.error('Error fetching crowdfunds:', error);
   }
 };
 
 const toggleFavorite = async (crowdfundId: string) => {
   try {
-    const crowdfundDoc = doc(db, 'crowdfunds', crowdfundId);
-    const crowdfund = crowdfunds.value.find(c => c.id === crowdfundId);
-    if (!crowdfund) return;
-
-    const isFavorited = crowdfund.isFavorited;
-
-    if (isFavorited) {
-      await updateDoc(crowdfundDoc, {
-        favorite_crowdfund: arrayRemove({ user_id: currentUserId, crowdfund_id: crowdfundId })
-      });
-      crowdfund.favorite_crowdfund = crowdfund.favorite_crowdfund?.filter(fav => fav.user_id !== currentUserId) ?? [];
-    } else {
-      await updateDoc(crowdfundDoc, {
-        favorite_crowdfund: arrayUnion({ user_id: currentUserId, crowdfund_id: crowdfundId })
-      });
-      if (!crowdfund.favorite_crowdfund) {
-        crowdfund.favorite_crowdfund = [];
+    const crowdfund = crowdfunds.value.find((cf: any) => cf.id === crowdfundId);
+    if (crowdfund) {
+      const updatedCrowdfund = { ...crowdfund };
+      if (crowdfund.isFavorited) {
+        updatedCrowdfund.favorite_crowdfund = (updatedCrowdfund.favorite_crowdfund || []).filter((fav: any) => fav.user_id !== currentUserId);
+      } else {
+        updatedCrowdfund.favorite_crowdfund = [...(updatedCrowdfund.favorite_crowdfund || []), { user_id: currentUserId, crowdfund_id: crowdfundId }];
       }
-      crowdfund.favorite_crowdfund.push({ user_id: currentUserId, crowdfund_id: crowdfundId });
+      const response = await fetch(`http://localhost:5000/api/crowdfund/${crowdfundId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedCrowdfund),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      crowdfund.isFavorited = !crowdfund.isFavorited;
     }
-
-    crowdfund.isFavorited = !isFavorited;
   } catch (error) {
     console.error('Error toggling favorite status:', error);
   }

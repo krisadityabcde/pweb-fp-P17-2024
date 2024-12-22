@@ -59,6 +59,7 @@ router.beforeEach((to, _, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     const token = localStorage.getItem('token');
     if (!token) {
+      alert('You must be logged in to access this page');
       next({ name: 'login' });
     } else {
       next();
