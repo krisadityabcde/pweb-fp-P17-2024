@@ -158,7 +158,17 @@ try {
 const submitComment = async () => {
   try {
     const updatedCrowdfund = { ...crowdfund.value };
-    updatedCrowdfund.comments = [...(updatedCrowdfund.comments || []), { user_name: currentUserName.value, message: commentMessage.value, timestamp: new Date() }];
+    const newComment = {
+      id: new Date().getTime().toString(),  // Generate a unique ID based on timestamp
+      user_name: currentUserName.value,
+      message: commentMessage.value,
+      timestamp: new Date(),
+    };
+
+    // Tambahkan komentar baru ke array comments
+    updatedCrowdfund.comments = [...(updatedCrowdfund.comments || []), newComment];
+    
+    // Kirim ke server
     const response = await fetch(`http://localhost:5000/api/crowdfund/${crowdfundId}`, {
       method: 'PUT',
       headers: {
@@ -166,10 +176,13 @@ const submitComment = async () => {
       },
       body: JSON.stringify(updatedCrowdfund),
     });
+    
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    comments.value.push({ user_name: currentUserName.value, message: commentMessage.value, timestamp: new Date() });
+
+    // Update komentar di frontend
+    comments.value.push(newComment);
     alert('Comment submitted successfully!');
     commentMessage.value = '';
   } catch (error) {
