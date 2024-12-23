@@ -2,8 +2,7 @@
   <div class="card bg-white shadow-md rounded-lg p-4">
     <img :src="image" alt="Campaign Image" class="card-image w-full h-48 object-cover rounded-t-lg" />
     <div class="card-content p-4">
-      <h2 class="card-title text-xl font-semibold">{{ name }}</h2>
-      <p class="card-description text-gray-700">{{ description }}</p>
+      <h2 class="card-title text-xl font-semibold">{{ props.name }}</h2>
       <p class="card-target text-green-600 font-bold">Target: {{ formattedTarget }}</p>
       <router-link :to="'/crowdfund/' + id" class="text-blue-500 hover:underline">Lihat Detail</router-link>
       <button @click="toggleFavorite" class="mt-2 py-1 px-3 bg-transparent text-red-500 rounded-md">

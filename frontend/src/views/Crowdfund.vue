@@ -11,7 +11,7 @@
         v-for="item in openCrowdfunds"
         :key="item.id"
         :id="item.id"
-        :title="item.name"
+        :name="item.name || ''"
         :description="item.description"
         :target="item.target"
         :image="item.image"
