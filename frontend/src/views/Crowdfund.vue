@@ -8,18 +8,14 @@
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card
-        v-for="item in crowdfunds"
+        v-for="item in openCrowdfunds"
         :key="item.id"
-        :id="item.id || ''"
-        :name="item.name || ''"
+        :id="item.id"
+        :title="item.name"
         :description="item.description"
-        :target="item.target || ''"
-        :current_donation="item.current_donation ?? 0"
-        :status="item.status || CrowdfundStatus.OPEN"
-        :image="item.image || ''"
+        :target="item.target"
+        :image="item.image"
         :isFavorited="item.isFavorited"
-        :favorite_crowdfund="item.favorite_crowdfund || []"
-        :created_at="item.created_at || ''"
         @favorite="item.id ? toggleFavorite(item.id) : null"
       />
     </div>
@@ -27,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Card from '../components/ui/Card.vue';
 import { CrowdfundStatus } from '../types';
 import type { Crowdfund } from '../types';
@@ -51,6 +47,10 @@ const fetchCrowdfunds = async () => {
     console.error('Error fetching crowdfunds:', error);
   }
 };
+
+const openCrowdfunds = computed(() => {
+  return crowdfunds.value.filter((item: any) => item.status === CrowdfundStatus.OPEN);
+});
 
 const toggleFavorite = async (crowdfundId: string) => {
   try {

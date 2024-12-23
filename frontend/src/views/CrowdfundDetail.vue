@@ -1,9 +1,10 @@
 <template>
   <div class="crowdfund-detail-page">
       <h1 class="text-3xl font-bold mb-4">{{ crowdfund.name }}</h1>
-      <img :src="crowdfund.image" alt="Campaign Image" class="w-full h-full object-cover rounded-lg mb-4" />
       <div class="article-content">
-          <p class="text-gray-700 mb-4">{{ crowdfund.description }}</p>
+        <div class="flex justify-center mb-4">
+            <img :src="crowdfund.image" alt="Campaign Image" class="rounded-lg" />
+        </div>
           <p class="text-green-600 font-bold mb-4">Target: {{ formattedTarget }}</p>
           <p class="text-blue-600 font-bold mb-4">Current Donation: {{ formattedCurrentDonation }}</p>
           <div class="progress-bar-container mb-4">
